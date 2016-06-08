@@ -2,7 +2,9 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/RafaelRiber/RetroWatch/master/Hardware/OSHPark%20Renders/front.png" width="400"/>
   <img src="https://raw.githubusercontent.com/RafaelRiber/RetroWatch/master/Hardware/OSHPark%20Renders/back.png" width="400"/>
-  <b>OSHPark renders</b>
+</p>
+<p align="center">
+<b>OSHPark renders</b>
 </p>
 
 ## Short description
