@@ -1,7 +1,11 @@
 # RetroWatch
 <p align="center">
   <img src="https://raw.githubusercontent.com/RafaelRiber/RetroWatch/master/Hardware/OSHPark%20Renders/front.png" width="400"/>
+  <em>Front</em>
+</p>  
+<p align="center">
   <img src="https://raw.githubusercontent.com/RafaelRiber/RetroWatch/master/Hardware/OSHPark%20Renders/back.png" width="400"/>
+  <em>Back</em>
 </p>
 <p align="center">
 <b>OSHPark renders</b>
