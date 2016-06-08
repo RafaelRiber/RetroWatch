@@ -22,3 +22,5 @@ The board design was made in Eagle, and can be freely modified. It can also dire
 ##Software
 The software was written in Arduino code, is licensed under MIT License, and can be uploaded on the microcontroller via ISP.
 Be sure to set the desired time in the code prior to uploading, to set the time registers on the RTC.
+
+To be able to upload the code on the watch, an Arduno IDE board file for an "ATMega328 on a breadboard" running at 8 MHz with the internal crystal, is needed. You can find it here: https://www.arduino.cc/en/Tutorial/ArduinoToBreadboard under "Minimal Circuit (Eliminating the External Clock)"
