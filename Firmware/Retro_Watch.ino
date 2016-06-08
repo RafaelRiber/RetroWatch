@@ -165,8 +165,23 @@ void show_temp()
 {
   char tempString[10];
   temp_msb = DS3231_get_MSB();
-  temp_lsb = temp_lsb = DS3231_get_LSB();
-  temp = (100*temp_msb) + (10*temp_lsb);
+  temp_lsb = DS3231_get_LSB();
+  
+   switch(temp_lsb)
+   {
+     case 0:
+       temp = (temp_msb*100);
+       break;
+     case 1 :
+       temp = (temp_msb*100) + 25;
+       break;
+     case 2:
+       temp = (temp_msb*100) + 50;
+       break;
+     case 3:
+       temp = (temp_msb*100) + 75;
+       break;
+   }
   sprintf(tempString, "%04d", temp);
   sevSeg.DisplayString(tempString, 2);
 }
