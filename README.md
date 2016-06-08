@@ -1,4 +1,5 @@
 # RetroWatch
+##WARNING: THE PCB IS YET TO BE TESTED. USE AT YOUR OWN RISK.
 <p align="center">
   <img src="https://raw.githubusercontent.com/RafaelRiber/RetroWatch/master/Hardware/OSHPark%20Renders/front.png" width="400"/>
   <em>Front</em>
