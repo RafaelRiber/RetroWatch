@@ -25,3 +25,9 @@ The software was written in Arduino code, is licensed under MIT License, and can
 Be sure to set the desired time in the code prior to uploading, to set the time registers on the RTC.
 
 To be able to upload the code on the watch, an Arduno IDE board file for an "ATMega328 on a breadboard" running at 8 MHz with the internal crystal, is needed. You can find it here: https://www.arduino.cc/en/Tutorial/ArduinoToBreadboard under "Minimal Circuit (Eliminating the External Clock)"
+###Required Libraries
+1. [Chrono library by thomasfredericks](https://github.com/thomasfredericks/Chrono)
+2. [Pushbutton library from Pololu](http://pololu.github.io/pushbutton-arduino/)
+3. [RTCLib by Adafruit Industries](https://github.com/adafruit/RTClib)
+4. [SevSeg by SparkFun](https://github.com/sparkfun/SevSeg)
+
