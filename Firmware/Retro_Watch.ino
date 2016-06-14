@@ -21,6 +21,8 @@
 //SOFTWARE.
 
 //Include required libraries
+#include <Chrono.h>
+#include <LightChrono.h>
 #include <RTClib.h>
 #include <Wire.h>
 #include <SevSeg.h>
@@ -41,6 +43,8 @@ Pushbutton button3(BUTTON3);
 SevSeg sevSeg;
 RTC_DS3231 rtc;
 
+Chrono myChrono(Chrono::SECONDS);
+
 //Declare vars
 byte temp_msb;
 byte temp_lsb;
@@ -55,6 +59,8 @@ unsigned long display_time;
 unsigned long display_date;
 unsigned long temp;
 int mode;
+int deciSecond;
+int count = 1;
 
 //Get seconds from RTC
 unsigned int get_seconds()
@@ -109,7 +115,6 @@ void show_hm()
   char tempString[10];
   sprintf(tempString, "%04d", display_time);
   sevSeg.DisplayString(tempString, 2);
-
 }
 
 //Show minutes and seconds on display
@@ -124,7 +129,6 @@ void show_ms()
   char tempString[10];
   sprintf(tempString, "%04d", display_time);
   sevSeg.DisplayString(tempString, 2);
-
 }
 
 //Show date on display
@@ -186,10 +190,55 @@ void show_temp()
   sevSeg.DisplayString(tempString, 2);
 }
 
+void stopwatch()
+{
+  switch(count)
+  {
+    case 0:
+      char tempString[10];
+      if(myChrono.hasPassed(1))
+      {
+        deciSecond++;
+        sprintf(tempString, "%04d", deciSecond);
+        if(deciSecond < 10000)
+        {
+         sevSeg.DisplayString(tempString, 2);
+        }
+        if(deciSecond >= 10000)
+        {
+          sevSeg.DisplayString(tempString, 4);
+        }
+      }
+      break;
+    case 1:
+      sprintf(tempString, "%04d", deciSecond);
+      if(deciSecond < 10000)
+      {
+        sevSeg.DisplayString(tempString, 2);
+      }
+      if(deciSecond >= 10000)
+      {
+        sevSeg.DisplayString(tempString, 4);
+      }
+      break;
+  }
+  if (button3.getSingleDebouncedPress())
+    {
+      if (count <= 1)
+      {
+        count++;
+      }
+      if (count > 1)
+      {
+        count = 0;
+      }
+    }
+}
+
 //Initial setup
 void setup()
 {
-  delay(25);
+  delay(10);
   timer = millis();
 
   //Set time if RTC lost power
@@ -223,6 +272,26 @@ void setup()
 
   sevSeg.SetBrightness(100);
 
+  for (int i = 0; i < 50; i++)
+  {
+    sevSeg.DisplayString("rexx", 0);
+  }
+
+  for (int i = 0; i < 50; i++)
+  {
+    sevSeg.DisplayString("xtro", 0);
+  }
+
+  for (int i = 0; i < 50; i++)
+  {
+    sevSeg.DisplayString("xISx", 0);
+  }
+
+  for (int i = 0; i < 50; i++)
+  {
+    sevSeg.DisplayString("COOL", 0);
+  }
+
 }
 
 //Main loop
@@ -241,9 +310,16 @@ void loop()
       break;
     case 1:
       show_ms();
+      if (button2.getSingleDebouncedPress())
+      {
+        for (int i = 0; i < 250; i++)
+        {
+          show_temp();
+        }
+      }
       break;
     case 2:
-      show_temp();
+      stopwatch();
       break;
     default:
       show_hm();
@@ -254,11 +330,15 @@ void loop()
   {
     if (button1.getSingleDebouncedPress())
     {
+      deciSecond = 0;
       mode = 0;
+      count = 1;
     }
     if (button2.getSingleDebouncedPress())
     {
+      deciSecond = 0;
       mode = 1;
+      count = 1;
     }
     if (button3.getSingleDebouncedPress())
     {
