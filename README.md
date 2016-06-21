@@ -11,8 +11,8 @@
 <p align="center">
 <b>OSHPark renders</b>
 </p>
-<p>
-<img src="https://raw.githubusercontent.com/RafaelRiber/RetroWatch/master/Hardware/Assembled.JPG" width="400"/>
+<p align="center">
+<img src="https://raw.githubusercontent.com/RafaelRiber/RetroWatch/master/Hardware/Assembled.JPG" width="700"/>
 <em>Assembled board</em>
 </p
 
