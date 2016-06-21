@@ -31,7 +31,7 @@
 //Define constants
 #define BUTTON1 14
 #define BUTTON2 15
-#define BUTTON3 16
+#define BUTTON3                     16
 #define DS3231_I2C_ADDR             0x68
 #define DS3231_TEMPERATURE_MSB      0x11
 #define DS3231_TEMPERATURE_LSB      0x12
@@ -58,8 +58,8 @@ unsigned int year;
 unsigned long display_time;
 unsigned long display_date;
 unsigned long temp;
+long deciSecond;
 int mode;
-int deciSecond;
 int count = 1;
 
 //Get seconds from RTC
@@ -247,7 +247,7 @@ void setup()
     // following line sets the RTC to the date & time this sketch was compiled
     //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // This line sets the RTC with an explicit date & time:
-    rtc.adjust(DateTime(2016, 6, 6, 19, 16, 0));
+    rtc.adjust(DateTime(2016, 6, 21, 16, 3, 0));
   }
   //Init display vars
   int displayType = COMMON_CATHODE;
