@@ -16,7 +16,7 @@ A retro watch, based around the HP QDSP-6064 Bubble display, used in 70s HP calc
 The code is open source, licensed under the MIT License, and the harware is fully open-source.
   
 ## Hardware
-The board design was made in Eagle, has been tested and works. It can be freely modified. It can also directly be ordered on OSHPark: 
+The board design was made in Eagle, has been tested and works. It can be freely modified. It can also directly be ordered on the OSHPark website: 
 <p align="center"><a href="https://oshpark.com/shared_projects/3zNSaolF"><img src="https://oshpark.com/assets/badge-5b7ec47045b78aef6eb9d83b3bac6b1920de805e9a0c227658eac6e19a045b9c.png" alt="Order from OSH Park"></img></a></p>
   
 ##Software
