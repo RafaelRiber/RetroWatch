@@ -25,7 +25,9 @@ The board design was made in Eagle, has been tested and works. It can be freely 
 <p align="center"><a href="https://oshpark.com/shared_projects/3zNSaolF"><img src="https://oshpark.com/assets/badge-5b7ec47045b78aef6eb9d83b3bac6b1920de805e9a0c227658eac6e19a045b9c.png" alt="Order from OSH Park"></img></a></p>
 
 A 500 mAh [LiPo Battery from Adafruit](https://adafru.it/1578) fits perfectly under the board.
-Click [here](https://github.com/RafaelRiber/RetroWatch/blob/master/BOM.md) for the BOM.
+
+###Bill Of Materials
+You can find the BOM [here](https://github.com/RafaelRiber/RetroWatch/blob/master/BOM.md).
 
   
 ##Software
