@@ -22,10 +22,6 @@ The board design was made in Eagle, has been tested and works. A 500 mAh [LiPo B
 
 ###Bill Of Materials
 You can find the BOM [here](https://github.com/RafaelRiber/RetroWatch/blob/master/BOM.md).
-
-###Planned Hardware
-1. Programming and charging via USB
-
   
 ##Software
 The software was written in Arduino code, is licensed under MIT License, and can be uploaded on the microcontroller via ISP.
