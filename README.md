@@ -14,6 +14,11 @@
 ## Short description
 A retro watch, based around the HP QDSP-6064 Bubble display, used in 70s HP calculators like the [HP-35](https://en.wikipedia.org/wiki/HP-35). The display is controlled by an Atmel ATMega328P-AU MCU with Arduino code, and the time is kept by a Maxim DS3231 Real-Time Clock module, that stays connected to the LiPo battery at all times, keeping time even when the microcontroller and display are not powered.
 The code is open source, licensed under the MIT License, and the harware is fully open-source.
+
+###Featured on:
+[Hackaday.com blog post by Elliot Williams](http://hackaday.com/2016/06/25/easy-bubble-watch-oozes-retro-charm/)
+
+[Hackaday.io project page](https://hackaday.io/project/12402-retrowatch)
   
 ## Hardware
 The board design was made in Eagle, has been tested and works. It can be freely modified. It can also directly be ordered on the OSHPark website: 
