@@ -300,14 +300,6 @@ void menu_select()
         watch = 0;
       }
       break;
-    case 5:
-      sevSeg.DisplayString("SETx", 0);
-      if (button1.getSingleDebouncedPress())
-      {
-        mode = 5;
-        watch = 0;
-      }
-      break;
   }
   
   if (button2.getSingleDebouncedPress())
@@ -320,9 +312,9 @@ void menu_select()
    }
    if (menu < 0)
    {
-    menu = 5;
+    menu = 4;
    }
-   if (menu > 5)
+   if (menu > 4)
    {
     menu = 0;
    }
@@ -346,14 +338,12 @@ void modes()
      break;
    case 4:
      show_year();
-   case 5:
-     break;
   }
      if (mode < 0)
    {
-    mode = 5;
+    mode = 4;
    }
-   if (mode > 5)
+   if (mode > 4)
    {
     mode = 0;
    }
