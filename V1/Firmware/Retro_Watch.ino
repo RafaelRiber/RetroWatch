@@ -59,8 +59,10 @@ unsigned long display_time;
 unsigned long display_date;
 unsigned long temp;
 long deciSecond;
-int mode;
 int count = 1;
+int menu;
+int mode;
+int watch;
 
 //Get seconds from RTC
 unsigned int get_seconds()
@@ -103,6 +105,13 @@ unsigned int get_months()
   return months;
 }
 
+unsigned int get_year()
+{
+  DateTime now = rtc.now();
+  year = now.year();
+  return year;
+}
+
 //Show hours and minutes on display
 void show_hm()
 {
@@ -142,6 +151,14 @@ void show_date()
 
   sprintf(tempString, "%04d", display_date);
   sevSeg.DisplayString(tempString, 2);
+}
+
+void show_year()
+{
+  char tempString[10];
+  get_year();
+  sprintf(tempString, "%4d", year);
+  sevSeg.DisplayString(tempString, 0);
 }
 
 
@@ -233,7 +250,123 @@ void stopwatch()
         count = 0;
       }
     }
+    if (button2.getSingleDebouncedPress())
+    {
+      deciSecond = 0;
+    }
 }
+
+void menu_select()
+{
+  switch(menu)
+  {
+    case 0:
+      sevSeg.DisplayString("HOUr", 0);
+      if (button1.getSingleDebouncedPress())
+      {
+        mode = 0;
+        watch = 0;
+      }
+      break;
+    case 1:
+      sevSeg.DisplayString("SECx", 0);
+      if (button1.getSingleDebouncedPress())
+      {
+        mode = 1;
+        watch = 0;
+      }
+      break;
+    case 2:
+      sevSeg.DisplayString("CHRO", 0);
+      if (button1.getSingleDebouncedPress())
+      {
+        mode = 2;
+        watch = 0;
+      }
+      break;
+    case 3:
+      sevSeg.DisplayString("DATE", 0);
+      if (button1.getSingleDebouncedPress())
+      {
+        mode = 3;
+        watch = 0;
+      }
+      break;
+    case 4:
+      sevSeg.DisplayString("YEAR", 0);
+      if (button1.getSingleDebouncedPress())
+      {
+        mode = 4;
+        watch = 0;
+      }
+      break;
+    case 5:
+      sevSeg.DisplayString("SETx", 0);
+      if (button1.getSingleDebouncedPress())
+      {
+        mode = 5;
+        watch = 0;
+      }
+      break;
+  }
+  
+  if (button2.getSingleDebouncedPress())
+  {
+    menu = menu - 1;
+  }
+  if (button3.getSingleDebouncedPress())
+  {
+    menu++;
+   }
+   if (menu < 0)
+   {
+    menu = 5;
+   }
+   if (menu > 5)
+   {
+    menu = 0;
+   }
+}
+
+void modes()
+{
+  switch(mode)
+  {
+    case 0:
+      show_hm();
+      break;
+   case 1:
+     show_ms();
+     break;
+   case 2:
+     stopwatch();
+     break;
+   case 3:
+     show_date();
+     break;
+   case 4:
+     show_year();
+   case 5:
+     break;
+  }
+     if (mode < 0)
+   {
+    mode = 5;
+   }
+   if (mode > 5)
+   {
+    mode = 0;
+   }
+     if (button1.getSingleDebouncedPress())
+  {
+    watch++;
+    if (watch > 1)
+    {
+      watch = 0;
+    }
+  }
+}
+
 
 //Initial setup
 void setup()
@@ -247,7 +380,7 @@ void setup()
     // following line sets the RTC to the date & time this sketch was compiled
     //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // This line sets the RTC with an explicit date & time:
-    rtc.adjust(DateTime(2016, 6, 21, 16, 3, 0));
+    rtc.adjust(DateTime(2016, 6, 25, 14, 36, 0));
   }
   //Init display vars
   int displayType = COMMON_CATHODE;
@@ -271,78 +404,39 @@ void setup()
   sevSeg.Begin(displayType, numberOfDigits, digit1, digit2, digit3, digit4, segA, segB, segC, segD, segE, segF, segG, segDP);
 
   sevSeg.SetBrightness(100);
-
-  for (int i = 0; i < 50; i++)
-  {
-    sevSeg.DisplayString("rexx", 0);
-  }
-
-  for (int i = 0; i < 50; i++)
-  {
-    sevSeg.DisplayString("xtro", 0);
-  }
-
-  for (int i = 0; i < 50; i++)
-  {
-    sevSeg.DisplayString("xISx", 0);
-  }
-
-  for (int i = 0; i < 50; i++)
-  {
-    sevSeg.DisplayString("COOL", 0);
-  }
+//
+//  for (int i = 0; i < 50; i++)
+//  {
+//    sevSeg.DisplayString("rexx", 0);
+//  }
+//
+//  for (int i = 0; i < 50; i++)
+//  {
+//    sevSeg.DisplayString("xtro", 0);
+//  }
+//
+//  for (int i = 0; i < 50; i++)
+//  {
+//    sevSeg.DisplayString("xISx", 0);
+//  }
+//
+//  for (int i = 0; i < 50; i++)
+//  {
+//    sevSeg.DisplayString("COOL", 0);
+//  }
 
 }
 
 //Main loop
 void loop()
 {
-  switch(mode){
+  switch(watch)
+  {
     case 0:
-      show_hm();
-      if (button1.getSingleDebouncedPress())
-      {
-        for (int i = 0; i < 250; i++)
-        {
-          show_date();
-        }
-      }
+      modes();
       break;
     case 1:
-      show_ms();
-      if (button2.getSingleDebouncedPress())
-      {
-        for (int i = 0; i < 250; i++)
-        {
-          show_temp();
-        }
-      }
+      menu_select();
       break;
-    case 2:
-      stopwatch();
-      break;
-    default:
-      show_hm();
-      break;
-  }
-  
-  if (millis() - timer >= 5)
-  {
-    if (button1.getSingleDebouncedPress())
-    {
-      deciSecond = 0;
-      mode = 0;
-      count = 1;
-    }
-    if (button2.getSingleDebouncedPress())
-    {
-      deciSecond = 0;
-      mode = 1;
-      count = 1;
-    }
-    if (button3.getSingleDebouncedPress())
-    {
-      mode = 2;
-    }
   }
 }
