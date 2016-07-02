@@ -31,9 +31,10 @@ Be sure to set the desired time in the code prior to uploading, to set the time 
 
 Functions of the code include:
 * Hours, minutes and seconds
-* Day and month
-* Stopwatch
+* Day, month, year, day of year, day in week, week in year.
+* Stopwatch (start, stop, reset)
 * Temperature reading from the real-time-clock's built-in thermometer (accurate to about 3°C)
+* Brightness setting in software, saved to EEPROM to save even if the watch is powered off.
  
 To be able to upload the code on the watch, an Arduno IDE board file for an "ATMega328 on a breadboard" running at 8 MHz with the internal crystal, is needed. You can find it here: https://www.arduino.cc/en/Tutorial/ArduinoToBreadboard under "Minimal Circuit (Eliminating the External Clock)"
 ###Required Libraries
@@ -43,6 +44,8 @@ To be able to upload the code on the watch, an Arduno IDE board file for an "ATM
 4. [SevSeg by SparkFun](https://github.com/sparkfun/SevSeg)
 
 ###Planned Sofware Functions
-1. Menu structure for mode selection
-2. Year
-3. Time set on the watch
+• ~~Menu structure for mode selection~~ DONE !
+
+• ~~Year~~ DONE !
+
+• Time set on the watch
