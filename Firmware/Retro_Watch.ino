@@ -27,6 +27,8 @@
 #include <Wire.h>
 #include <SevSeg.h>
 #include <Pushbutton.h>
+#include <EEPROM.h>
+#include <avr/wdt.h>
 
 //Define constants
 #define BUTTON1 14
@@ -55,14 +57,27 @@ unsigned int hours;
 unsigned int months;
 unsigned int days;
 unsigned int year;
+unsigned int doy;
+unsigned int dow;
+unsigned int woy;
+unsigned int time_show;
 unsigned long display_time;
 unsigned long display_date;
 unsigned long temp;
-long deciSecond;
+unsigned long deciSecond;
 int count = 1;
+int addr = 0;
 int menu;
 int mode;
 int watch;
+int brightness;
+int date;
+
+//Software reset function
+void softwareReset(uint8_t prescaller) {
+  wdt_enable(prescaller);
+  while(1) {}
+}
 
 //Get seconds from RTC
 unsigned int get_seconds()
@@ -112,6 +127,20 @@ unsigned int get_year()
   return year;
 }
 
+unsigned int get_doy()
+{
+  DateTime now = rtc.now();
+  doy = now.dayOfYear();
+  return doy;
+}
+
+unsigned int get_dow()
+{
+  DateTime now = rtc.now();
+  dow = now.dayOfTheWeek();
+  return dow;
+}
+
 //Show hours and minutes on display
 void show_hm()
 {
@@ -141,26 +170,57 @@ void show_ms()
 }
 
 //Show date on display
+//Show date on display
 void show_date()
 {
-  char tempString[10];
-  get_days();
-  get_months();
-
-  display_date = (days * 100) + months;
-
-  sprintf(tempString, "%04d", display_date);
-  sevSeg.DisplayString(tempString, 2);
+  char tempString[5];
+  switch(date)
+  {
+    case 0:
+      get_days();
+      get_months();
+      display_date = (days * 100) + months;
+      sprintf(tempString, "%04d", display_date);
+      sevSeg.DisplayString(tempString, 2);
+      break;
+    case 1:
+      get_year();
+      sprintf(tempString, "%4d", year);
+      sevSeg.DisplayString(tempString, 0);
+      break;
+    case 2:
+      get_doy();
+      sprintf(tempString, "%4d", doy);
+      sevSeg.DisplayString(tempString, 0);
+      break;
+    case 3:
+      get_dow();
+      sprintf(tempString, "%4d", dow);
+      sevSeg.DisplayString(tempString, 0);
+      break;
+    case 4:
+      get_doy();
+      woy = doy / 7;
+      sprintf(tempString, "%4d", woy);
+      sevSeg.DisplayString(tempString, 0);
+  }
+  if (button2.getSingleDebouncedPress())
+  {
+    date = date - 1;
+  }
+  if (button3.getSingleDebouncedPress())
+  {
+    date++;
+   }
+   if (date < 0)
+   {
+    date = 4;
+   }
+   if (date > 4)
+   {
+    date = 0;
+   }
 }
-
-void show_year()
-{
-  char tempString[10];
-  get_year();
-  sprintf(tempString, "%4d", year);
-  sevSeg.DisplayString(tempString, 0);
-}
-
 
 //Get temperature from RTC
 byte DS3231_get_MSB(){
@@ -256,12 +316,76 @@ void stopwatch()
     }
 }
 
+void time()
+{
+  switch(time_show)
+  {
+    case 0:
+      show_hm();
+      break;
+    case 1:
+      show_ms();
+      break;
+  }
+    if (button2.getSingleDebouncedPress())
+  {
+    time_show = time_show - 1;
+  }
+  if (button3.getSingleDebouncedPress())
+  {
+    time_show++;
+   }
+   if (time_show < 0)
+   {
+    time_show = 1;
+   }
+   if (time_show > 1)
+   {
+    time_show = 0;
+   }
+}
+
+//Set brightness and save to EEPROM if different than before
+void brightness_set()
+{
+  char tempString[5];
+  sprintf(tempString, "%4d", brightness);
+  sevSeg.DisplayString(tempString, 0);
+
+  if (button2.getSingleDebouncedPress())
+  {
+    brightness = brightness - 1;
+  }
+  if (button3.getSingleDebouncedPress())
+  {
+    brightness = brightness + 1;
+  }
+  if (brightness > 10)
+  {
+    brightness = 10;
+  }
+  if (brightness < 0)
+  {
+    brightness = 0;
+  }
+  if (button1.getSingleDebouncedPress())
+    {
+      //Save brightness to EEPROM
+      if(brightness != EEPROM.read(0))
+      {
+        EEPROM.write(0, brightness);
+      }
+      mode = 7;
+      watch = 1;
+    }
+}
+
 void menu_select()
 {
   switch(menu)
   {
     case 0:
-      sevSeg.DisplayString("HOUr", 0);
+      sevSeg.DisplayString("Hour", 0);
       if (button1.getSingleDebouncedPress())
       {
         mode = 0;
@@ -269,7 +393,7 @@ void menu_select()
       }
       break;
     case 1:
-      sevSeg.DisplayString("SECx", 0);
+      sevSeg.DisplayString("Date", 0);
       if (button1.getSingleDebouncedPress())
       {
         mode = 1;
@@ -277,7 +401,7 @@ void menu_select()
       }
       break;
     case 2:
-      sevSeg.DisplayString("CHRO", 0);
+      sevSeg.DisplayString("Chro", 0);
       if (button1.getSingleDebouncedPress())
       {
         mode = 2;
@@ -285,7 +409,7 @@ void menu_select()
       }
       break;
     case 3:
-      sevSeg.DisplayString("DATE", 0);
+      sevSeg.DisplayString("Heat", 0);
       if (button1.getSingleDebouncedPress())
       {
         mode = 3;
@@ -293,10 +417,18 @@ void menu_select()
       }
       break;
     case 4:
-      sevSeg.DisplayString("YEAR", 0);
+      sevSeg.DisplayString("Brtx", 0);
       if (button1.getSingleDebouncedPress())
       {
         mode = 4;
+        watch = 0;
+      }
+      break;
+    case 5:
+      sevSeg.DisplayString("Rstx", 0);
+      if (button1.getSingleDebouncedPress())
+      {
+        mode = 5;
         watch = 0;
       }
       break;
@@ -312,11 +444,11 @@ void menu_select()
    }
    if (menu < 0)
    {
-    menu = 4;
-   }
-   if (menu > 4)
-   {
     menu = 0;
+   }
+   if (menu > 5)
+   {
+    menu = 5;
    }
 }
 
@@ -325,36 +457,40 @@ void modes()
   switch(mode)
   {
     case 0:
-      show_hm();
+      time();
       break;
-   case 1:
-     show_ms();
-     break;
-   case 2:
-     stopwatch();
-     break;
-   case 3:
-     show_date();
-     break;
-   case 4:
-     show_year();
-  }
-     if (mode < 0)
-   {
-    mode = 4;
+    case 1:
+      show_date();
+      break;
+    case 2:
+      stopwatch();
+      break;
+    case 3:
+      show_temp();
+      break;
+    case 4:
+      brightness_set();
+      break;
+    case 5:
+      softwareReset(WDTO_15MS);
+      break;
    }
-   if (mode > 4)
+     if (mode < 0)
    {
     mode = 0;
    }
+   if (mode > 5)
+   {
+    mode = 5;
+   }
      if (button1.getSingleDebouncedPress())
-  {
-    watch++;
-    if (watch > 1)
-    {
-      watch = 0;
-    }
-  }
+     {
+       watch++;
+       if (watch > 1)
+       {
+         watch = 0;
+       }
+   }
 }
 
 
@@ -362,6 +498,7 @@ void modes()
 void setup()
 {
   delay(10);
+  rtc.begin();
   timer = millis();
 
   //Set time if RTC lost power
@@ -370,7 +507,7 @@ void setup()
     // following line sets the RTC to the date & time this sketch was compiled
     //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     // This line sets the RTC with an explicit date & time:
-    rtc.adjust(DateTime(2016, 6, 25, 14, 36, 0));
+    rtc.adjust(DateTime(2016, 6, 27, 19, 15, 0));
   }
   //Init display vars
   int displayType = COMMON_CATHODE;
@@ -393,33 +530,13 @@ void setup()
 
   sevSeg.Begin(displayType, numberOfDigits, digit1, digit2, digit3, digit4, segA, segB, segC, segD, segE, segF, segG, segDP);
 
-  sevSeg.SetBrightness(100);
-//
-//  for (int i = 0; i < 50; i++)
-//  {
-//    sevSeg.DisplayString("rexx", 0);
-//  }
-//
-//  for (int i = 0; i < 50; i++)
-//  {
-//    sevSeg.DisplayString("xtro", 0);
-//  }
-//
-//  for (int i = 0; i < 50; i++)
-//  {
-//    sevSeg.DisplayString("xISx", 0);
-//  }
-//
-//  for (int i = 0; i < 50; i++)
-//  {
-//    sevSeg.DisplayString("COOL", 0);
-//  }
-
+  brightness = EEPROM.read(0);
 }
 
 //Main loop
 void loop()
-{
+{ 
+  sevSeg.SetBrightness(brightness * 10);
   switch(watch)
   {
     case 0:
